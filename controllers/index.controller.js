@@ -4,10 +4,10 @@ const indexCtrl = {};
 const Pool = pg.Pool;
 
 const pool = new Pool({
-   host: 'ec2-54-243-67-199.compute-1.amazonaws.com',
-   user: 'lxatxmthaijzgw',
-   password: '8cc7a6fa697c1d2ee528bb8b35fc5e38cb8e1c6050d8e9f137f78a80ebb0f2a5',
-   database: 'd7uusa3pkvt9p3'
+   host: 'ec2-52-71-55-81.compute-1.amazonaws.com',
+   user: 'cblflfqkoftamy',
+   password: 'c3c022c436e2c3a11c3b4dc0c1e52433f4ddaa20ed2552afcd521784e951b87c',
+   database: 'd7pbr7epm2c2ml'
 
 });
 
