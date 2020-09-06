@@ -6,7 +6,7 @@ const cors = require("cors");
 const bodyparser = require("body-parser");
 const PORT = process.env.PORT || 5000;
 
-app.set('json spaces', 20);
+app.set('json spaces', 40);
 //middleware
 
 app.use(cors());
@@ -16,6 +16,5 @@ app.use(bodyparser.urlencoded({ extended: false }));
 app.use("/authentication", require("./routes/jwtAuth"));
 app.use("/dashboard", require("./routes/dashboard"));
 app.use("/", require("./routes/dashboardoriginal"));
-app.listen(5000, () => {
-console.log(`Server is starting on port 5000`);
-});
+
+app.listen(PORT, () => console.log(`Server para demo running on port ${PORT}`));

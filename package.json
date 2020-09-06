@@ -15,9 +15,9 @@
 
 
   },
- 
-  
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "engines": {
+"node": "^4.9.1",
+"npm": "^2.15.11"
+}
+
 }
