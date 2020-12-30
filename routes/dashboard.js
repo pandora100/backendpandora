@@ -4,6 +4,9 @@ const authorize = require("../middleware/authorize");
 const pool = require("../db");
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
+/////
+var moment = require('moment');
+/////
 router.post("/", authorize, async ((req, res) => {
   try {
     const user = await (pool.query(
@@ -472,5 +475,66 @@ router.get("/estadisticas", authorize, async ((req, res) => {
     res.status(500).send("Server error");
   }
   }));
-/////////////    
+///////////// 
+//router.post("/bitacoras", authorize, async ((req, res) => {
+router.post("/bitacoras",  async ((req, res) => {  
+  try {
+    //startDate,endDate,filtro1,filtro2,filtro3,valorfiltro1,valorfiltro2,valorfiltro3
+    console.log('recibido req.body:',req.body);
+    const startDate = req.body.startDate;
+    const endDate = req.body.endDate;
+    const filtro1 = req.body.filtro1;
+    const filtro2 = req.body.filtro2;
+    const filtro3 = req.body.filtro3;
+    const valorfiltro1 = req.body.valorfiltro1;
+    const valorfiltro2= req.body.valorfiltro2;
+    const valorfiltro3 = req.body.valorfiltro3;
+    console.log('recibido startDate:',startDate);
+    console.log('recibido endDate:',endDate);
+    console.log('recibido filtro1:',filtro1);
+    console.log('recibido filtro2:',filtro2);
+    console.log('recibido filtro3:',filtro3);
+    console.log('recibido valorfiltro1:',valorfiltro1);
+    console.log('recibido valorfiltro2:',valorfiltro2);
+    console.log('recibido valorfiltro3:',valorfiltro3);
+    var formatStartDate = moment(startDate).format('YYYY-MM-DD');
+    console.log('formateada formatStartDate:',formatStartDate);
+    var timeStartDate = moment(formatStartDate).valueOf()/1000;
+    console.log('formateada timeStartDate:',timeStartDate);
+     var formatEndDate = moment(endDate).format('YYYY-MM-DD');
+    console.log('formateada formatEndDate:',formatEndDate);
+    var timeEndDate = moment(formatEndDate).valueOf()/1000;
+    console.log('formateada timeEndDate:',timeEndDate);
+    
+     const eventos = await (pool.query(
+      "SELECT tevento.id_evento, tagente.nombre as nombreag,tgrupo.nombre as nombregr,tmodulo.nombre as nombremo ,tevento.timestamp,tevento.utimestamp,tevento.criticity FROM tevento INNER JOIN tagente ON  tevento.id_agente= tagente.id_agente INNER JOIN tgrupo ON tevento.id_grupo= tgrupo.id_grupo INNER JOIN tmodulo ON tevento.id_modulo= tmodulo.id_modulo;"
+    ));
+
+     const eventosfiltrados = await (pool.query(
+       `SELECT tevento.id_evento, tagente.nombre as nombreag,tgrupo.nombre as nombregr,tmodulo.nombre as nombremo ,tevento.timestamp,tevento.utimestamp,tevento.criticity FROM tevento INNER JOIN tagente ON  tevento.id_agente= tagente.id_agente INNER JOIN tgrupo ON tevento.id_grupo= tgrupo.id_grupo INNER JOIN tmodulo ON tevento.id_modulo= tmodulo.id_modulo WHERE tevento.utimestamp > ${timeStartDate} AND tevento.utimestamp< ${timeEndDate};`
+   
+     ));
+  console.log('----------------------------------------------------------------');    
+  // console.log('router.get /eventos 01 eventos:',eventos);  
+   //console.log('router.post /bitacoras 02 eventos.rows:',eventos.rows); 
+   console.log('----------------------------------------------------------------'); 
+   //console.log('router.post /bitacoras 04 eventosfiltrados.rows:',eventosfiltrados.rows);  
+    //return res.json(eventos.rows);
+
+    const eventosfiltradosEND = await (pool.query(
+           `SELECT tevento.id_evento, tagente.nombre as nombreag,tgrupo.nombre as nombregr,tmodulo.nombre as nombremo ,tevento.timestamp,tevento.utimestamp,tevento.criticity as estado,tevento.user_comment FROM tevento INNER JOIN tagente ON  tevento.id_agente= tagente.id_agente INNER JOIN tgrupo ON tevento.id_grupo= tgrupo.id_grupo INNER JOIN tmodulo ON tevento.id_modulo= tmodulo.id_modulo WHERE tevento.utimestamp > ${timeStartDate} AND tevento.utimestamp< ${timeEndDate}  AND t${filtro1}.nombre like '%${valorfiltro1}%' AND t${filtro2}.nombre like '%${valorfiltro2}%' AND t${filtro3}.nombre like '%${valorfiltro3}%';`
+             ));
+   console.log('----------------------------------------------------------------'); 
+   //console.log('router.post /bitacoras 06 eventosfiltradosEND.rows:',eventosfiltradosEND.rows); 
+   console.log('----------------------------------------------------------------'); 
+         
+   return res.json(eventosfiltradosEND.rows);
+ 
+   } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+  }));
+    
+/////////////       
 module.exports = router;
